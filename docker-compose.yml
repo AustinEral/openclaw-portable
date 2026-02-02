@@ -1,8 +1,30 @@
 services:
   openclaw:
-    image: openclaw:snapshot-20260201-192105
+    build: .
     container_name: openclaw
+    volumes:
+      - openclaw-data:/root/.openclaw
     ports:
       - "18789:18789"
       - "18791:18791"
     restart: unless-stopped
+
+  backup:
+    image: alpine
+    profiles: ["tools"]
+    volumes:
+      - openclaw-data:/data:ro
+      - ./backups:/backup
+    command: sh -c "tar czf /backup/bosun-$(date +%Y%m%d-%H%M%S).tar.gz -C /data . && ls -lh /backup/*.tar.gz | tail -1"
+
+  restore:
+    image: alpine
+    profiles: ["tools"]
+    volumes:
+      - openclaw-data:/data
+      - ./backups:/backup
+    entrypoint: ["sh", "-c", "test -n \"$1\" || { echo 'Usage: docker compose run --rm restore <filename>'; exit 1; } && rm -rf /data/* /data/..?* /data/.[!.]* 2>/dev/null; tar xzf /backup/$1 -C /data && echo 'Restored from '$1", "--"]
+
+volumes:
+  openclaw-data:
+    external: true
