@@ -20,10 +20,11 @@ services:
   restore:
     image: alpine
     profiles: ["tools"]
+    working_dir: /host
     volumes:
       - openclaw-data:/data
-      - ./backups:/backup
-    entrypoint: ["sh", "-c", "test -n \"$1\" || { echo 'Usage: docker compose run --rm restore <filename>'; exit 1; } && rm -rf /data/* /data/..?* /data/.[!.]* 2>/dev/null; tar xzf /backup/$1 -C /data && echo 'Restored from '$1", "--"]
+      - ..:/host
+    entrypoint: ["sh", "-c", "test -n \"$1\" || { echo 'Usage: docker compose run --rm restore <backup.tar.gz>'; exit 1; } && test -f \"$1\" || { echo \"File not found: $1\"; exit 1; } && rm -rf /data/* /data/..?* /data/.[!.]* 2>/dev/null; tar xzf \"$1\" -C /data && echo 'Restored from '$1", "--"]
 
 volumes:
   openclaw-data:
