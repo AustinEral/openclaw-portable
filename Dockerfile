@@ -20,5 +20,5 @@ EXPOSE 18789 18791
 # Set environment variables
 ENV NODE_ENV=production
 
-# Start OpenClaw gateway with allow-unconfigured for initial setup
-CMD ["openclaw", "gateway", "--port", "18789", "--allow-unconfigured", "--verbose"]
+# Start OpenClaw gateway (no --allow-unconfigured, requires proper config)
+CMD ["openclaw", "gateway", "--port", "18789", "--verbose"]
