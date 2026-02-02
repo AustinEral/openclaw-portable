@@ -1,6 +1,6 @@
 # OpenClaw Portable Docker Setup
 
-A completely portable, self-contained Docker deployment of OpenClaw AI assistant. This setup prioritizes simplicity and complete data persistence.
+A completely portable, self-contained Docker deployment of OpenClaw AI assistant.
 
 ## Quick Start
 
@@ -16,6 +16,11 @@ docker compose up -d
 docker compose logs -f
 ```
 
+### Restart (keeps all data)
+```bash
+docker compose restart
+```
+
 ### Stop
 ```bash
 docker compose stop
@@ -24,11 +29,6 @@ docker compose stop
 ### Start
 ```bash
 docker compose start
-```
-
-### Restart
-```bash
-docker compose restart
 ```
 
 ### Check Status
@@ -41,42 +41,45 @@ docker compose ps
 docker compose exec openclaw openclaw config --section model
 ```
 
-## Backup & Restore
+## Data Persistence
 
-### Create Snapshot
+**During Normal Operation:**
+- Container auto-restarts if it crashes (`restart: unless-stopped`)
+- All data persists across restarts (sessions, config, everything)
+- Changes are saved in the running container
+
+**To Port to Another System:**
+
+1. Create snapshot of current state:
 ```bash
 docker commit openclaw openclaw:snapshot-$(date +%Y%m%d-%H%M%S)
 ```
 
-### Export Snapshot
+2. Export snapshot:
 ```bash
 docker save openclaw:snapshot-20260201-192105 | gzip > backup.tar.gz
 ```
 
-### Load on New Machine
+3. On new machine, load and run:
 ```bash
 docker load < backup.tar.gz
-# Update image name in docker compose.yml
+# Update image name in docker-compose.yml
 docker compose up -d
 ```
+
+The entire system (config, sessions, personality) transfers to the new machine.
 
 ## Access Points
 
 - Gateway: http://YOUR_SERVER_IP:18789
 - Browser Control: http://YOUR_SERVER_IP:18791
 
-## Data Storage
-
-All data persists in Docker volume `openclaw-complete`:
-- Config: `/root/.openclaw/`
-- Workspace: `/root/.openclaw/workspace/`
-- Sessions, personality, everything
-
 ## Architecture
 
 - Base: Ubuntu 24.04 LTS
 - Runtime: Node.js 22
 - OpenClaw: npm global install
-- Persistence: Full filesystem in named volume
+- Persistence: Container filesystem (survives restarts)
+- Portability: Docker snapshots
 
 Simple. Complete. Portable.
