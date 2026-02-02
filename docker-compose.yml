@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  openclaw:
+    build: .
+    container_name: openclaw
+    volumes:
+      - openclaw-complete:/
+    ports:
+      - "18789:18789"
+      - "18791:18791"
+    restart: unless-stopped
+
+volumes:
+  openclaw-complete:

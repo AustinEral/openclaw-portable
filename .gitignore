@@ -1,0 +1,12 @@
+# Docker
+*.tar.gz
+*.tar
+
+# Backups
+backup-*
+
+# System
+.DS_Store
+*.swp
+*.swo
+*~
