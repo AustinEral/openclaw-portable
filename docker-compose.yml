@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   openclaw:
-    build: .
+    image: openclaw:snapshot-20260201-192105
     container_name: openclaw
     volumes:
       - openclaw-complete:/
