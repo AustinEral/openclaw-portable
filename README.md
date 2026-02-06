@@ -24,8 +24,22 @@ State lives in the volume, not the container.
 
 ## Quick Start
 
+### First Time Setup
+
 ```bash
+# Create the data volume
 docker volume create openclaw-data
+
+# Run the interactive onboarding wizard
+docker compose run --rm onboard
+
+# Start the gateway
+docker compose up -d
+```
+
+### Subsequent Starts
+
+```bash
 docker compose up -d
 ```
 
